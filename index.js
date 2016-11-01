@@ -85,16 +85,29 @@ controller.on('bot_channel_join', function (bot, message) {
     bot.reply(message, "I'm here!")
 });
 
-controller.hears('hello', 'direct_message', function (bot, message) {
-    bot.reply(message, 'Hello!');
-});
+controller.hears(
+    ['start usablity'],
+    ['direct_mention', 'mention', 'direct_message'],
+    function(bot,message) {
+        bot.reply(message, 'Starting usability session!');
+        console.log(bot.api);
+    }
+);
+controller.hears(
+    ['end usablity'],
+    ['direct_mention', 'mention', 'direct_message'],
+    function(bot,message) {
+        bot.reply(message, 'Finishing usability session after !');
+        console.log(bot.api);
+    }
+);
 
 
 /**
  * AN example of what could be:
  * Any un-handled direct mention gets a reaction and a pat response!
  */
-//controller.on('direct_message,mention,direct_mention', function (bot, message) {
+// controller.on('direct_message,mention,direct_mention', function (bot, message) {
 //    bot.api.reactions.add({
 //        timestamp: message.ts,
 //        channel: message.channel,
@@ -105,4 +118,4 @@ controller.hears('hello', 'direct_message', function (bot, message) {
 //        }
 //        bot.reply(message, 'I heard you loud and clear boss.');
 //    });
-//});
+// });
