@@ -1,12 +1,4 @@
-/**
- * A Bot for Slack!
- */
-
-
-/**
- * Define a function for initiating a conversation on installation
- * With custom integrations, we don't have a way to find out who installed us, so we can't message them :(
- */
+const fs = require('fs')
 
 function onInstallation(bot, installer) {
     if (installer) {
@@ -83,18 +75,20 @@ let recordingChannels = [];
 let session = {}
 let isRecording = false
 
-controller.on('bot_channel_join', function (bot, message) {
-    bot.reply(message, "I'm here!")
+controller.on('bot_channel_join', function (bot, msg) {
+    bot.reply(msg, "I'm here!")
 });
+controller.hears('e2e', 'direct_mention,mention', function(bot, msg) {
+    bot.say({
+        text:"@ur start",
+        channel: msg.channel
+    })
 
-controller.hears('hello', 'direct_message,direct_mention,mention', function (bot, message) {
-    bot.reply(message, 'Hello!');
-});
-
+})
 controller.hears('start', 'direct_message,direct_mention,mention', function(bot, msg) {
-    // session.startTime = msg.ts;
-    console.log(msg.ts)
     bot.reply(msg, 'Starting usability session!');
+
+    session.startTime = msg.ts;
     recordingChannels.push(msg.channel)
     session.messages=[];
 
@@ -108,28 +102,14 @@ controller.on('ambient', (bot, msg) => {
     }
 });
 
-controller.hears('end', 'direct_mention,mention', function(bot,message) {
-        bot.reply(message, 'Finish Recording 🎊')
-        session.endTime = msg.ts;
+controller.hears('end', 'direct_mention,mention', function(bot,msg) {
+    bot.reply(msg, 'Finish Recording 🎊')
 
-        console.log('------- Finish Recording 🎊 -------')
-        console.log('session ', session)
+    session.endTime = msg.ts;
+    fs.writeFile('./lib/data/session.json', JSON.stringify(session), function (err) {
+      if (err) return console.log(err);
+    });
+    console.log('------- Finish Recording 🎊 -------')
+    console.log('session ', session)
     }
 );
-
-/**
- * AN example of what could be:
- * Any un-handled direct mention gets a reaction and a pat response!
- */
-// controller.on('direct_message,mention,direct_mention', function (bot, message) {
-//    bot.api.reactions.add({
-//        timestamp: message.ts,
-//        channel: message.channel,
-//        name: 'robot_face',
-//    }, function (err) {
-//        if (err) {
-//            console.log(err)
-//        }
-//        bot.reply(message, 'I heard you loud and clear boss.');
-//    });
-// });
