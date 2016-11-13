@@ -79,29 +79,43 @@ controller.on('rtm_close', function (bot) {
 /**
  * Core bot logic goes here!
  */
-// BEGIN EDITING HERE!
+let recordingChannels = [];
+let session = {}
+let isRecording = false
 
 controller.on('bot_channel_join', function (bot, message) {
     bot.reply(message, "I'm here!")
 });
 
-controller.hears(
-    ['start usablity'],
-    ['direct_mention', 'mention', 'direct_message'],
-    function(bot,message) {
-        bot.reply(message, 'Starting usability session!');
-        console.log(bot.api);
-    }
-);
-controller.hears(
-    ['end usablity'],
-    ['direct_mention', 'mention', 'direct_message'],
-    function(bot,message) {
-        bot.reply(message, 'Finishing usability session after !');
-        console.log(bot.api);
-    }
-);
+controller.hears('hello', 'direct_message,direct_mention,mention', function (bot, message) {
+    bot.reply(message, 'Hello!');
+});
 
+controller.hears('start', 'direct_message,direct_mention,mention', function(bot, msg) {
+    // session.startTime = msg.ts;
+    console.log(msg.ts)
+    bot.reply(msg, 'Starting usability session!');
+    recordingChannels.push(msg.channel)
+    session.messages=[];
+
+    console.log('------- Start Recording 🆕 -------')
+    console.log('Currently listenting to ', recordingChannels)
+});
+
+controller.on('ambient', (bot, msg) => {
+    if(recordingChannels.indexOf(msg.channel) > -1){
+        session.messages.push(msg)
+    }
+});
+
+controller.hears('end', 'direct_mention,mention', function(bot,message) {
+        bot.reply(message, 'Finish Recording 🎊')
+        session.endTime = msg.ts;
+
+        console.log('------- Finish Recording 🎊 -------')
+        console.log('session ', session)
+    }
+);
 
 /**
  * AN example of what could be:
