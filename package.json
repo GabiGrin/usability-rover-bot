@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "description": "The usability bot.",
   "main": "index.js",
+  "repository" :
+  { "type" : "git"
+  , "url" : "https://github.com/NirBenita/easy-peasy-bot"
+  },
   "scripts": {
     "start": "nodemon index.js --ignore lib/data/session.json",
     "test": "echo \"Error: no test specified\" && exit 1"
