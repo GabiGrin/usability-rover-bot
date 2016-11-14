@@ -49,17 +49,65 @@ if (process.env.TOKEN || process.env.SLACK_TOKEN) {
 }
 
 
-/**
- * A demonstration for how to handle websocket events. In this case, just log when we have and have not
- * been disconnected from the websocket. In the future, it would be super awesome to be able to specify
- * a reconnect policy, and do reconnections automatically. In the meantime, we aren't going to attempt reconnects,
- * WHICH IS A B0RKED WAY TO HANDLE BEING DISCONNECTED. So we need to fix this.
- *
- * TODO: fixed b0rked reconnect behavior
- */
+let recordingChannels = [];
+let session = {}
+let mockStartMsg = {
+    "type": "message",
+    "channel": "C2CU76YDB",
+    "user": "U2CTXB49J",
+    "text": "@ur start",
+    "ts": "1479141248.000002",
+    "team": "T2CSKBAE7",
+    "event": "ambient"
+};
+let mockEndMsg = {
+    "type": "message",
+    "channel": "C2CU76YDB",
+    "user": "U2CTXB49J",
+    "text": "@ur end",
+    "ts": "1479117841.000034",
+    "team": "T2CSKBAE7",
+    "event": "ambient"
+};
+
+let mockSession = [{
+    "type": "message",
+    "channel": "C2CU76YDB",
+    "user": "U2CTXB49J",
+    "text": "This product is terrible!",
+    "ts": "1479117541.000034",
+    "team": "T2CSKBAE7",
+    "event": "ambient"
+}, {
+    "type": "message",
+    "channel": "C2CU76YDB",
+    "user": "U2CTXB49J",
+    "text": "Testing a product",
+    "ts": "1479141266.000005",
+    "team": "T2CSKBAE7",
+    "event": "ambient"
+}, {
+    "type": "message",
+    "channel": "C2CU76YDB",
+    "user": "U2CTXB49J",
+    "text": "Let's see how this goes",
+    "ts": "1479141271.000006",
+    "team": "T2CSKBAE7",
+    "event": "ambient"
+}];
+
+    /**
+     * TODO: fixed b0rked reconnect behavior
+     */
 // Handle events related to the websocket connection to Slack
 controller.on('rtm_open', function (bot) {
     console.log('** The RTM api just connected!');
+
+    // simulate user input
+    start(mockStartMsg)
+    mockSession.map( msg => pushMsgToSession(msg))
+    saveSessionToFs(session, mockEndMsg.ts)
+
 });
 
 controller.on('rtm_close', function (bot) {
@@ -71,26 +119,33 @@ controller.on('rtm_close', function (bot) {
 /**
  * Core bot logic goes here!
  */
-let recordingChannels = [];
-let session = {}
-let isRecording = false
+
+const start = function(msg) {
+    session.startTime = msg.ts;
+    recordingChannels.push(msg.channel)
+    session.messages = session.messages ? session.messages : []
+}
+
+const pushMsgToSession = function(msg) {
+    session.messages.push(msg)
+}
+
+const saveSessionToFs = function(session, endTime) {
+    session.endTime = endTime;
+    fs.writeFile('./lib/data/session.json', JSON.stringify(session), function (err) {
+      if (err) return console.log(err);
+    });
+}
 
 controller.on('bot_channel_join', function (bot, msg) {
     bot.reply(msg, "I'm here!")
+    session = JSON.parse(fs.read)
 });
-controller.hears('e2e', 'direct_mention,mention', function(bot, msg) {
-    bot.say({
-        text:"@ur start",
-        channel: msg.channel
-    })
 
-})
 controller.hears('start', 'direct_message,direct_mention,mention', function(bot, msg) {
     bot.reply(msg, 'Starting usability session!');
 
-    session.startTime = msg.ts;
-    recordingChannels.push(msg.channel)
-    session.messages=[];
+    start(msg)
 
     console.log('------- Start Recording 🆕 -------')
     console.log('Currently listenting to ', recordingChannels)
@@ -98,17 +153,15 @@ controller.hears('start', 'direct_message,direct_mention,mention', function(bot,
 
 controller.on('ambient', (bot, msg) => {
     if(recordingChannels.indexOf(msg.channel) > -1){
-        session.messages.push(msg)
+        pushMsgToSession(msg)
     }
 });
 
 controller.hears('end', 'direct_mention,mention', function(bot,msg) {
     bot.reply(msg, 'Finish Recording 🎊')
 
-    session.endTime = msg.ts;
-    fs.writeFile('./lib/data/session.json', JSON.stringify(session), function (err) {
-      if (err) return console.log(err);
-    });
+    saveSessionToFs(session, msg.ts)
+
     console.log('------- Finish Recording 🎊 -------')
     console.log('session ', session)
     }
