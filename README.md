@@ -1,7 +1,16 @@
 # Usability Rover
-The simplest way for your team to record and document usability tests.
+The Usability Rover helps your team record and document usability tests.
 
-# Botkit's awesome setup guide
+## Usage
+Invie him to the channel.
+
+`"@usability-rover start"`
+This will begin a recording of all conversations in the channel.
+
+`"@usability-rover end"`
+Finish the session, and store it at ./lib/data
+
+## Botkit's awesome setup guide
 1. Fork this project.
 2. Open up your favorite terminal app, and clone your new repository to your local computer.
 3. This is a Node.js project, so you’ll need to install the various dependencies by running:
