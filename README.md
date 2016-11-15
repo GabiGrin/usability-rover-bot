@@ -1,5 +1,5 @@
 # Usability Rover
-The simplest way for your team to record and document a usability test.
+The simplest way for your team to record and document usability tests.
 
 # Botkit's awesome setup guide
 1. Fork this project.
