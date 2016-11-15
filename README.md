@@ -26,14 +26,3 @@ The simplest way for your team to record and document usability tests.
     ```
 
     This event handler is triggered when the bot receives a direct message from a user that contains the word “hello.”
-
-    The bot responds in the direct message with, “Hello!”
-
-9. You can listen to any kind of message or you can configure your bot to only listen to direct messages or specific @-mentions of your bot. It’s up to you! To start let’s re-write the event listener to be more  flexible about the greetings it is listening for:
-    ```javascript
-    controller.hears(['hello', 'hi', 'greetings'], ['direct_mention', 'mention', 'direct_message'], function(bot,message) {
-         bot.reply(message, 'Hello!');
-     });
-    ```
-
-    Now our bot will respond any time it sees “hello,” “hi,” or “greetings” in either a DM or a message that @-mentions the bot. (Don’t forget to restart your bot after each edit!)
