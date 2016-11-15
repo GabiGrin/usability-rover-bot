@@ -1,5 +1,5 @@
-const mock = require('./mock')
-const sessionUtils = require('./session-utils')
+const mock = require('./lib/mock')
+const sessionUtils = require('./lib/session-utils')
 
 let config = {};
 let recordingChannels = [];
@@ -17,7 +17,6 @@ function onInstallation(bot, installer) {
         });
     }
 }
-
 
 /**
  * Configure the persistence options
