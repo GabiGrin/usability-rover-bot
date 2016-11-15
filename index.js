@@ -1,8 +1,9 @@
 const mock = require('./mock')
 const sessionUtils = require('./session-utils')
 
-
-
+let config = {};
+let recordingChannels = [];
+let session = {}
 
 function onInstallation(bot, installer) {
     if (installer) {
@@ -21,8 +22,6 @@ function onInstallation(bot, installer) {
 /**
  * Configure the persistence options
  */
-
-var config = {};
 if (process.env.MONGOLAB_URI) {
     var BotkitStorage = require('botkit-storage-mongo');
     config = {
@@ -34,28 +33,15 @@ if (process.env.MONGOLAB_URI) {
     };
 }
 
-/**
- * Are being run as an app or a custom integration? The initialization will differ, depending
- */
-
 if (process.env.TOKEN || process.env.SLACK_TOKEN) {
-    //Treat this as a custom integration
+
     var customIntegration = require('./lib/custom_integrations');
     var token = (process.env.TOKEN) ? process.env.TOKEN : process.env.SLACK_TOKEN;
     var controller = customIntegration.configure(token, config, onInstallation);
-} else if (process.env.CLIENT_ID && process.env.CLIENT_SECRET && process.env.PORT) {
-    //Treat this as an app
-    var app = require('./lib/apps');
-    var controller = app.configure(process.env.PORT, process.env.CLIENT_ID, process.env.CLIENT_SECRET, config, onInstallation);
 } else {
     console.log('Error: If this is a custom integration, please specify TOKEN in the environment. If this is an app, please specify CLIENTID, CLIENTSECRET, and PORT in the environment');
     process.exit(1);
 }
-
-let recordingChannels = [];
-let session = {}
-
-
 
 
     /**
@@ -77,15 +63,10 @@ controller.on('rtm_close', function (bot) {
     // you may want to attempt to re-open
 });
 
-
-/**
- * Core bot logic goes here!
- */
-
-
 controller.on('bot_channel_join', function (bot, msg) {
     bot.reply(msg, "I'm here!")
-    session = JSON.parse(fs.read)
+    // TODO: Read from FS
+    // session = JSON.parse(fs.read)
 });
 
 controller.hears('start', 'direct_message,direct_mention,mention', function(bot, msg) {
