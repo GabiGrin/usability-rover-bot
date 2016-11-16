@@ -8,7 +8,7 @@
   , "url" : "https://github.com/NirBenita/easy-peasy-bot"
   },
   "scripts": {
-    "start": "nodemon index.js --ignore lib/data/session.json",
+    "start": "nodemon index.js --ignore lib/data/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

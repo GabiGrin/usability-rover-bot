@@ -51,8 +51,9 @@ controller.on('rtm_open', function (bot) {
     console.log('** The RTM api just connected!');
 
     // simulate user input
+    sessionUtils.nameSession(session, mock.session.name)
     sessionUtils.start(session, mock.startMsg, recordingChannels)
-    mock.session.map( msg => sessionUtils.pushMsgToSession(session, msg))
+    mock.session.messages.map( msg => sessionUtils.pushMsgToSession(session, msg))
     sessionUtils.saveSessionToFs(session, mock.endMsg)
 
 });
@@ -69,7 +70,13 @@ controller.on('bot_channel_join', function (bot, msg) {
 });
 
 controller.hears('start', 'direct_message,direct_mention,mention', function(bot, msg) {
-    bot.reply(msg, 'Starting usability session!');
+    bot.startConversation(msg ,function(err,convo) {
+        convo.ask('How would you like to call it?',function(response,convo) {
+            sessionUtils.nameSession(session, response.text)
+            convo.say('Starting ' + response.text);
+            convo.next()
+        });
+    });
 
     sessionUtils.start(session, msg, recordingChannels)
 
