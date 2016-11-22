@@ -9,7 +9,8 @@
   },
   "scripts": {
     "start": "nodemon index.js --ignore lib/data/",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "babel-node tests/test.js | faucet",
+    "test-clean": "babel-node tests/test.js"
   },
   "repository": {
     "type": "git",
