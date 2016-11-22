@@ -40,23 +40,37 @@ test('Session factory.', (assert) => {
 
 test('Given a session, add a name.', (assert) => {
     let mockSession,
-        mockSessionState    
+        mockSessionStateName    
 
     mockSession = sessionUtils.createNewSession(mock.startMsg)
-    mockSessionState = mockSession.getSession()
+    mockSessionStateName = mockSession.getSession().name
 
-    assert.equal(mockSessionState.name, undefined,
+    assert.equal(mockSessionStateName, undefined,
         'Expected session name to be empty');
     
-    mockSession.name('gaga')    
+    mockSession.nameSession('gaga')    
 
-    mockSessionState = mockSession.getSession()
-    assert.equal(mockSessionState.name, 'gaga',
+    mockSessionStateName = mockSession.getSession().name
+    assert.equal(mockSessionStateName, 'gaga',
         'Expected session name to be gaga');
 
     assert.end();
 });
 
-// test('Add a message to the session', (assert) => {
+test('Add a message to the session', (assert) => {
+    let mockSession,
+        mockSessionMessages    
 
-// });
+    mockSession = sessionUtils.createNewSession(mock.startMsg)
+    mockSessionMessages = mockSession.getSession().messages
+
+    assert.equal(mockSessionMessages.length, 0,
+        'Expected messages array to be empty');
+    
+    mockSession.pushMsg(mock.messages[0])
+
+    assert.equal(mockSessionMessages.length, 1,
+        'Expected messages array to have one item');
+
+    assert.end();
+});
