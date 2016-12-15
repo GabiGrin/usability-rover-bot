@@ -8,8 +8,10 @@
     "url": "git+https://github.com/NirBenita/easy-peasy-bot"
   },
   "scripts": {
-    "build": "rm -rf dist && babel src --out-dir lib",
-    "start": "nodemon index.js --ignore lib/data/",
+    "build": "npm run clean && babel src --out-dir lib",
+    "clean": "rm -rf build",
+    "start": "nodemon lib/index.js",
+    "watch": "babel src --watch -d lib --source-maps inline",
     "test": "babel-node tests/test.js | faucet",
     "test-clean": "babel-node tests/test.js"
   },
@@ -32,7 +34,6 @@
     "mongodb": "^1.4.39"
   },
   "devDependencies": {
-    "babel": "^6.5.2",
     "babel-cli": "^6.0.0",
     "babel-preset-env": "^1.1.1"
   }
