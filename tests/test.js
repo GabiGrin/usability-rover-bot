@@ -1,10 +1,10 @@
-"use strict";
+"use strict"
 
 const test = require('tape')
 const mock = require('../lib/mock')
 const sessionUtils = require('../lib/session-utils')
 
-test('Session factory.', (assert) => {
+test('Session factory.', assert => {
     let mockSession,
         mockSessionState,
         sessionTimestamp,
@@ -36,9 +36,9 @@ test('Session factory.', (assert) => {
         'Expect to find an ID 0')
 
     assert.end()
-});
+})
 
-test('Given a session, add a name.', (assert) => {
+test('Given a session, add a name.', assert => {
     let mockSession,
         mockSessionStateName    
 
@@ -46,18 +46,18 @@ test('Given a session, add a name.', (assert) => {
     mockSessionStateName = mockSession.getSession().name
 
     assert.equal(mockSessionStateName, undefined,
-        'Expected session name to be empty');
+        'Expected session name to be empty')
     
     mockSession.nameSession('gaga')    
 
     mockSessionStateName = mockSession.getSession().name
     assert.equal(mockSessionStateName, 'gaga',
-        'Expected session name to be gaga');
+        'Expected session name to be gaga')
 
-    assert.end();
-});
+    assert.end()
+})
 
-test('Add a message to the session', (assert) => {
+test('Add a message to the session', assert => {
     let mockSession,
         mockSessionMessages    
 
@@ -65,12 +65,28 @@ test('Add a message to the session', (assert) => {
     mockSessionMessages = mockSession.getSession().messages
 
     assert.equal(mockSessionMessages.length, 0,
-        'Expected messages array to be empty');
+        'Expected messages array to be empty')
     
     mockSession.pushMsg(mock.messages[0])
 
     assert.equal(mockSessionMessages.length, 1,
-        'Expected messages array to have one item');
+        'Expected messages array to have one item')
 
-    assert.end();
-});
+    assert.end()
+})
+
+test('End a session', assert => {
+    let mockSession,
+        mockSessionMessages    
+
+    mockSession = sessionUtils.createNewSession(mock.startMsg)
+    
+    assert.notOk(mockSession.getSession().endTime,
+        'Expected the session to NOT have an end time')
+    
+    mockSession.endSession(mock.endMsg)
+
+    assert.equal(mockSession.getSession().endTime, mock.endMsg.ts,
+        'Expected session end time to equal mock end message timestamp')
+    assert.end()
+})

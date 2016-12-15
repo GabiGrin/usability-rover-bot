@@ -3,18 +3,14 @@
   "version": "0.0.1",
   "description": "The usability bot.",
   "main": "index.js",
-  "repository" :
-  { "type" : "git"
-  , "url" : "https://github.com/NirBenita/easy-peasy-bot"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NirBenita/easy-peasy-bot"
   },
   "scripts": {
     "start": "nodemon index.js --ignore lib/data/",
     "test": "babel-node tests/test.js | faucet",
     "test-clean": "babel-node tests/test.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/NirBenita/easy-peasy-bot"
   },
   "keywords": [
     "slack",
@@ -33,5 +29,9 @@
     "botkit": "0.2.2",
     "botkit-storage-mongo": "^1.0.2",
     "mongodb": "^1.4.39"
+  },
+  "devDependencies": {
+    "babel-tape-runner": "^2.0.1",
+    "babel-watch": "^2.0.4"
   }
 }

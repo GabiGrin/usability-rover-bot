@@ -49,13 +49,6 @@ if (process.env.TOKEN || process.env.SLACK_TOKEN) {
 // Handle events related to the websocket connection to Slack
 controller.on('rtm_open', function (bot) {
     console.log('** The RTM api just connected!');
-
-    // simulate user input
-    sessionUtils.nameSession(session, mock.session.name)
-    sessionUtils.start(session, mock.startMsg, recordingChannels)
-    mock.session.messages.map( msg => sessionUtils.pushMsgToSession(session, msg))
-    sessionUtils.saveSessionToFs(session, mock.endMsg)
-
 });
 
 controller.on('rtm_close', function (bot) {
@@ -72,29 +65,34 @@ controller.on('bot_channel_join', function (bot, msg) {
 controller.hears('start', 'direct_message,direct_mention,mention', function(bot, msg) {
     bot.startConversation(msg ,function(err,convo) {
         convo.ask('How would you like to call it?',function(response,convo) {
-            sessionUtils.nameSession(session, response.text)
+            session = sessionUtils.createNewSession(session, msg, recordingChannels)
+            session.nameSession(session, response.text)
+            recordingChannels.push(msg.channel)
             convo.say('Starting ' + response.text);
+            console.log('------- Start Recording 🆕 -------')
+            console.log('Currently listenting to ', recordingChannels)
             convo.next()
         });
     });
 
-    sessionUtils.start(session, msg, recordingChannels)
-
-    console.log('------- Start Recording 🆕 -------')
-    console.log('Currently listenting to ', recordingChannels)
 });
 
 controller.on('ambient', (bot, msg) => {
     if(recordingChannels.indexOf(msg.channel) > -1){
-        sessionUtils.pushMsgToSession(session, msg)
+        session.pushMsg(msg)
     }
 });
 
 controller.hears('end', 'direct_mention,mention', function(bot,msg) {
+    session.endSession(msg)
+    
+    // TODO Name by team and channel
+    fs.writeFile(`./lib/data/${session.name}.json`, JSON.stringify(session), function (err) {
+        if (err) return console.log(err);
+    });
+
     bot.reply(msg, 'Finish Recording 🎊')
-
-    sessionUtils.saveSessionToFs(session, msg)
-
+    
     console.log('------- Finish Recording 🎊 -------')
     console.log('session ', session)
     }
