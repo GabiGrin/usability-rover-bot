@@ -1,15 +1,18 @@
 [![image](https://cloud.githubusercontent.com/assets/2289769/20545056/9fa044ea-b115-11e6-9314-ba3e6516e573.png)](https://github.com/NirBenita/usability-rover-client)
 
 # Usability Rover
-The Usability Rover helps your team record and document usability tests.
+A dead simple Slack bot to help you and your team record conversation.
+Also comes with a [🎨 client side](https://github.com/NirBenita/usability-rover-client).
 
 ## Usage
-Invie him to the channel.
+1. Invite @usability-rover to the channel.
 
-`"@usability-rover start"`
+2. `"@usability-rover start"`
 This will begin a recording of all conversations in the channel.
 
-`"@usability-rover end"`
+3. Discuss and note over Slack with your team.
+
+4. `"@usability-rover end"`
 Finish the session, and store it at ./lib/data
 
 ## Botkit's awesome setup guide
