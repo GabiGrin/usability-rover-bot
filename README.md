@@ -2,13 +2,14 @@
 
 # Usability Rover
 A dead simple Slack bot to help you and your team record conversation.
+
 Also comes with a [🎨 client side](https://github.com/NirBenita/usability-rover-client).
 
 ## Usage
 1. Invite @usability-rover to the channel.
 
 2. `"@usability-rover start"`
-This will begin a recording of all conversations in the channel.
+The rober will now start a recording of the channel you're in.
 
 3. Discuss and note over Slack with your team.
 
